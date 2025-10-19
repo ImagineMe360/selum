@@ -12,8 +12,9 @@ def test_homepage_element():
     driver = webdriver.Chrome(options=options)
     driver.get("http://localhost:5173")  # runs locally in GitHub Actions
 
+    # Wait and find the element by ID
     element = driver.find_element(By.ID, "home-title")
-    assert "Welcome" in element.text
+    assert "My To-Do App" in element.text
 
     print("✅ Home page title element found:", element.text)
     driver.quit()
