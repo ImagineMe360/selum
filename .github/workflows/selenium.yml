@@ -5,9 +5,9 @@ on:
     branches: [develop]
   push:
     branches: [main]
-  schedule:
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
+  # schedule:
+  #   - cron: '*/5 * * * *'
+  # workflow_dispatch:
 
 jobs:
   selenium-test:
