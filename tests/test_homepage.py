@@ -8,13 +8,16 @@ import os
 
 def test_homepage_element():
     base_url = os.getenv("BASE_URL", "http://localhost:5173")
+
+    print("🔗 Testing against:", base_url)
+
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Chrome(options=options)
-    driver.get("http://localhost:5173")  # runs locally in GitHub Actions
+    driver.get(base_url)  # runs locally in GitHub Actions
 
     # Wait and find the element by ID
     element = driver.find_element(By.ID, "home-title")
@@ -27,13 +30,15 @@ def test_homepage_element():
 def test_add_todo_item():
     base_url = os.getenv("BASE_URL", "http://localhost:5173")
 
+    print("🔗 Testing against:", base_url)
+
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
     driver = webdriver.Chrome(options=options)
-    driver.get("http://localhost:5173")
+    driver.get(base_url)
 
     # Locate input and button
     input_field = driver.find_element(By.ID, "task-input")
