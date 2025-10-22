@@ -5,6 +5,9 @@ on:
     branches: [develop]
   push:
     branches: [main]
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 jobs:
   selenium-test:
@@ -23,11 +26,14 @@ jobs:
         run: npm install
 
       - name: Start dev server
+        # run: npm run dev &
+        if: github.event_name != 'schedule'
         run: npm run dev &
         env:
           CI: true
 
       - name: Wait for dev server
+        if: github.event_name != 'schedule'
         uses: jakejarvis/wait-action@master
         with:
           url: 'http://localhost:5173'
@@ -51,3 +57,26 @@ jobs:
 
       - name: Run Selenium tests
         run: pytest -v
+        env:
+          # If schedule run → use production URL (Netlify)
+          BASE_URL: ${{ github.event_name == 'schedule' && 'https://selum.netlify.app' || 'http://localhost:5173' }}
+
+      - name: Send email on failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: '🚨 Selenium Test Failed - ${{ github.repository }}'
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: 'Selenium Watchdog <${{ secrets.EMAIL_USERNAME }}>'
+          body: |
+            One or more Selenium tests have failed.
+
+            Repository: ${{ github.repository }}
+            Workflow: ${{ github.workflow }}
+            Branch/Trigger: ${{ github.ref_name }} / ${{ github.event_name }}
+            Commit: ${{ github.sha }}
+            Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
