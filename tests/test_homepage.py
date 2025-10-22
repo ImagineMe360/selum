@@ -3,9 +3,11 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
 from selenium.webdriver.common.keys import Keys
+import os
 
 
 def test_homepage_element():
+    base_url = os.getenv("BASE_URL", "http://localhost:5173")
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
@@ -23,6 +25,8 @@ def test_homepage_element():
 
 
 def test_add_todo_item():
+    base_url = os.getenv("BASE_URL", "http://localhost:5173")
+
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
